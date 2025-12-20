@@ -19,7 +19,7 @@ export interface LeaveTypeBalance{
 
 export interface LeaveApplication{
     id?: number;
-    employeeId: number;
+    employeeId: string;
     employeeName?: string;
     leaveTypeId: number;
     leaveTypeName?: string;

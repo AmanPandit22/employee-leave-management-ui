@@ -1,0 +1,119 @@
+<div class="dashboard-container">
+  <div class="header">
+    <div class="header-content">
+      <h1>Welcome, {{ userName }}</h1>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="dashboard-content">
+    <div class="quick-actions">
+      <h2>Quick Actions</h2>
+      <div class="action-buttons">
+        <button class="action-btn apply" (click)="applyLeave()">
+          <span class="icon">📝</span>
+          <span>Apply for Leave</span>
+        </button>
+        <button class="action-btn history" (click)="viewHistory()">
+          <span class="icon">📋</span>
+          <span>View History</span>
+        </button>
+      </div>
+    </div>
+
+    
+    <div class="leave-balance-section" *ngIf="leaveBalance">
+      <h2>Leave Balance - {{ currentYear }}</h2>
+      <div class="balance-cards">
+        <div class="balance-card total">
+          <div class="card-icon">📊</div>
+          <div class="card-content">
+            <h3>Total Leaves</h3>
+            <p class="number">{{ leaveBalance.totalLeaves }}</p>
+          </div>
+        </div>
+        <div class="balance-card available">
+          <div class="card-icon">✅</div>
+          <div class="card-content">
+            <h3>Available</h3>
+            <p class="number">{{ leaveBalance.availableLeaves }}</p>
+          </div>
+        </div>
+        <div class="balance-card used">
+          <div class="card-icon">📅</div>
+          <div class="card-content">
+            <h3>Used</h3>
+            <p class="number">{{ leaveBalance.usedLeaves }}</p>
+          </div>
+        </div>
+        <div class="balance-card pending">
+          <div class="card-icon">⏳</div>
+          <div class="card-content">
+            <h3>Pending</h3>
+            <p class="number">{{ leaveBalance.pendingLeaves }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="leave-types">
+        <h3>Leave Types Breakdown</h3>
+        <div class="types-grid">
+          <div class="type-card" *ngFor="let type of leaveBalance.leaveType">
+            <div class="type-header">
+              <h4>{{ type.leaveTypeName }}</h4>
+            </div>
+            <div class="type-stats">
+              <div class="stat">
+                <span class="label">Total:</span>
+                <span class="value">{{ type.total }}</span>
+              </div>
+              <div class="stat">
+                <span class="label">Used:</span>
+                <span class="value">{{ type.used }}</span>
+              </div>
+              <div class="stat">
+                <span class="label">Available:</span>
+                <span class="value available">{{ type.available }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="recent-applications">
+      <h2>Recent Applications</h2>
+      <div class="table-container" *ngIf="!loading && recentApplications.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Leave Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Days</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of recentApplications">
+              <td>{{ app.leaveTypeName }}</td>
+              <td>{{ app.startDate | date : 'MMM dd, yyyy' }}</td>
+              <td>{{ app.endDate | date : 'MMM dd, yyyy' }}</td>
+              <td>{{ app.numberOfDays }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(app.status)">
+                  {{ app.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="empty-state" *ngIf="!loading && recentApplications.length === 0">
+        <p>No leave applications found</p>
+      </div>
+      <div class="loading" *ngIf="loading">
+        <p>Loading...</p>
+      </div>
+    </div>
+
+    
+  </div>
+</div>

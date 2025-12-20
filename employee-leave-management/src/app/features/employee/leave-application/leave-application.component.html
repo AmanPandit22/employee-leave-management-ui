@@ -1,0 +1,96 @@
+<div class="application-container">
+  <div class="header">
+    <h1>Apply for Leave</h1>
+    <button class="btn-back" (click)="cancel()">← Back to Dashboard</button>
+  </div>
+  <div class="form-container">
+    <div class="success-message" *ngIf="success">
+      ✓ Leave application submitted successfully! Redirecting...
+    </div>
+
+    <form [formGroup]="leaveForm" (ngSubmit)="onSubmit()" *ngIf="!success">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="leaveTypeId">Leave Type *</label>
+          <select
+            id="leaveTypeId"
+            formControlName="leaveTypeId"
+            class="form-control"
+            [class.error]="f['leaveTypeId'].invalid && f['leaveTypeId'].touched"
+          >
+            <option value="">Select Leave Type</option>
+            <option *ngFor="let type of leaveTypes" [value]="type.id">
+              {{ type.name }} (Max: {{ type.maxAllowedPerYear }} days)
+            </option>
+          </select>
+          <div class="error-message" *ngIf="f['leaveTypeId'].invalid && f['leaveTypeId'].touched">
+            Please select a leave type
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startDate">Start Date *</label>
+          <input
+            type="date"
+            id="startDate"
+            formControlName="startDate"
+            class="form-control"
+            [class.error]="f['startDate'].invalid && f['startDate'].touched"
+          />
+          <div class="error-message" *ngIf="f['startDate'].invalid && f['startDate'].touched">
+            Start date is required
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date *</label>
+          <input
+            type="date"
+            id="endDate"
+            formControlName="endDate"
+            class="form-control"
+            [class.error]="f['endDate'].invalid && f['endDate'].touched"
+          />
+          <div class="error-message" *ngIf="f['endDate'].invalid && f['endDate'].touched">
+            End date is required
+          </div>
+        </div>
+      </div>
+      <div class="duration-info" *ngIf="calculateDays() > 0">
+        <span class="icon">📅</span>
+        <span
+          >Duration: <strong>{{ calculateDays() }} day(s)</strong></span
+        >
+      </div>
+      <div class="form-group">
+        <label for="reason">Reason *</label>
+        <textarea
+          id="reason"
+          formControlName="reason"
+          class="form-control textarea"
+          [class.error]="f['reason'].invalid && f['reason'].touched"
+          rows="4"
+          placeholder="Please provide a reason for your leave application"
+        ></textarea>
+        <div class="error-message" *ngIf="f['reason'].invalid && f['reason'].touched">
+          <span *ngIf="f['reason'].errors?.['required']">Reason is required</span>
+          <span *ngIf="f['reason'].errors?.['minlength']"
+            >Reason must be at least 10 characters</span
+          >
+        </div>
+      </div>
+      <div class="error-message" *ngIf="error">
+        {{ error }}
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancel()" [disabled]="loading">
+          Cancel
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="loading">
+          <span *ngIf="!loading">Submit Application</span>
+          <span *ngIf="loading">Submitting...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

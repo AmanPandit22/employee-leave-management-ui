@@ -5,23 +5,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import {
-
     LeaveBalance,
     LeaveApplication,
     LeaveType,
     LeaveApprovalRequest,
-    LeaveStatus
-
+    LeaveStatus,
 } from '../models/leave.model';
 
 @Injectable({
-
-    providedIn: 'root'
-
+    providedIn: 'root',
 })
-
 export class LeaveService {
-
     private readonly API_URL = 'https://api.example.com/api'; // Replace with actual API
 
     constructor(private http: HttpClient) { }
@@ -29,79 +23,61 @@ export class LeaveService {
     // Employee APIs
 
     getLeaveBalance(employeeId: string, year: number): Observable<LeaveBalance> {
-
         // return this.http.get<LeaveBalance>(`${this.API_URL}/leave/balance/${employeeId}/${year}`);
 
         return of(this.getDummyLeaveBalance(employeeId, year));
-
     }
 
-    getMyLeaveApplications(employeeId: number): Observable<LeaveApplication[]> {
-
+    getMyLeaveApplications(employeeId: string): Observable<LeaveApplication[]> {
         // return this.http.get<LeaveApplication[]>(`${this.API_URL}/leave/my-applications/${employeeId}`);
 
         return of(this.getDummyLeaveApplications(employeeId));
-
     }
 
     applyLeave(application: LeaveApplication): Observable<LeaveApplication> {
-
         // return this.http.post<LeaveApplication>(`${this.API_URL}/leave/apply`, application);
 
         return of({ ...application, id: Math.floor(Math.random() * 1000), appliedDate: new Date() });
-
     }
 
     cancelLeave(leaveId: number): Observable<boolean> {
-
         // return this.http.put<boolean>(`${this.API_URL}/leave/cancel/${leaveId}`, {});
 
         return of(true);
-
     }
 
     // Manager APIs
 
     getPendingLeaveApplications(): Observable<LeaveApplication[]> {
-
         // return this.http.get<LeaveApplication[]>(`${this.API_URL}/leave/pending`);
 
         return of(this.getDummyPendingApplications());
-
     }
 
     getTeamLeaveApplications(): Observable<LeaveApplication[]> {
-
         // return this.http.get<LeaveApplication[]>(`${this.API_URL}/leave/team`);
 
         return of(this.getDummyTeamApplications());
-
     }
 
     approveOrRejectLeave(request: LeaveApprovalRequest): Observable<boolean> {
-
         // return this.http.put<boolean>(`${this.API_URL}/leave/approve-reject`, request);
 
         return of(true);
-
     }
 
     // Common APIs
 
     getLeaveTypes(): Observable<LeaveType[]> {
-
         // return this.http.get<LeaveType[]>(`${this.API_URL}/leave/types`);
 
         return of(this.getDummyLeaveTypes());
-
     }
 
     // Dummy data generators - remove when connecting to real API
 
     private getDummyLeaveBalance(employeeId: string, year: number): LeaveBalance {
-
         return {
-
             employeeId,
 
             year,
@@ -115,25 +91,18 @@ export class LeaveService {
             availableLeaves: 14,
 
             leaveType: [
-
                 { leaveTypeId: 1, leaveTypeName: 'Annual Leave', total: 15, used: 5, available: 10 },
 
                 { leaveTypeId: 2, leaveTypeName: 'Sick Leave', total: 7, used: 2, available: 5 },
 
-                { leaveTypeId: 3, leaveTypeName: 'Casual Leave', total: 2, used: 1, available: 1 }
-
-            ]
-
+                { leaveTypeId: 3, leaveTypeName: 'Casual Leave', total: 2, used: 1, available: 1 },
+            ],
         };
-
     }
 
-    private getDummyLeaveApplications(employeeId: number): LeaveApplication[] {
-
+    private getDummyLeaveApplications(employeeId: string): LeaveApplication[] {
         return [
-
             {
-
                 id: 1,
 
                 employeeId,
@@ -158,12 +127,10 @@ export class LeaveService {
 
                 approverName: 'John Manager',
 
-                approvedDate: new Date('2024-12-02')
-
+                approvedDate: new Date('2024-12-02'),
             },
 
             {
-
                 id: 2,
 
                 employeeId,
@@ -184,23 +151,17 @@ export class LeaveService {
 
                 status: LeaveStatus.Pending,
 
-                appliedDate: new Date('2024-12-10')
-
-            }
-
+                appliedDate: new Date('2024-12-10'),
+            },
         ];
-
     }
 
     private getDummyPendingApplications(): LeaveApplication[] {
-
         return [
-
             {
-
                 id: 3,
 
-                employeeId: 2,
+                employeeId: 'EMP0002',
 
                 employeeName: 'Jane Employee',
 
@@ -218,15 +179,13 @@ export class LeaveService {
 
                 status: LeaveStatus.Pending,
 
-                appliedDate: new Date('2024-12-15')
-
+                appliedDate: new Date('2024-12-15'),
             },
 
             {
-
                 id: 4,
 
-                employeeId: 3,
+                employeeId: 'EMP0003',
 
                 employeeName: 'Bob Smith',
 
@@ -244,25 +203,19 @@ export class LeaveService {
 
                 status: LeaveStatus.Pending,
 
-                appliedDate: new Date('2024-12-16')
-
-            }
-
+                appliedDate: new Date('2024-12-16'),
+            },
         ];
-
     }
 
     private getDummyTeamApplications(): LeaveApplication[] {
-
         return [
-
             ...this.getDummyPendingApplications(),
 
             {
-
                 id: 5,
 
-                employeeId: 4,
+                employeeId: 'EMP0004',
 
                 employeeName: 'Alice Johnson',
 
@@ -284,28 +237,44 @@ export class LeaveService {
 
                 approverName: 'John Manager',
 
-                approvedDate: new Date('2024-11-02')
-
-            }
-
+                approvedDate: new Date('2024-11-02'),
+            },
         ];
-
     }
 
     private getDummyLeaveTypes(): LeaveType[] {
-
         return [
+            {
+                id: 1,
+                name: 'Annual Leave',
+                description: 'Yearly vacation leave',
+                maxAllowedPerYear: 15,
+                isActive: true,
+            },
 
-            { id: 1, name: 'Annual Leave', description: 'Yearly vacation leave', maxAllowedPerYear: 15, isActive: true },
+            {
+                id: 2,
+                name: 'Sick Leave',
+                description: 'Medical leave',
+                maxAllowedPerYear: 7,
+                isActive: true,
+            },
 
-            { id: 2, name: 'Sick Leave', description: 'Medical leave', maxAllowedPerYear: 7, isActive: true },
+            {
+                id: 3,
+                name: 'Casual Leave',
+                description: 'Short notice leave',
+                maxAllowedPerYear: 2,
+                isActive: true,
+            },
 
-            { id: 3, name: 'Casual Leave', description: 'Short notice leave', maxAllowedPerYear: 2, isActive: true },
-
-            { id: 4, name: 'Maternity Leave', description: 'Maternity leave', maxAllowedPerYear: 90, isActive: true }
-
+            {
+                id: 4,
+                name: 'Maternity Leave',
+                description: 'Maternity leave',
+                maxAllowedPerYear: 90,
+                isActive: true,
+            },
         ];
-
     }
-
 }
