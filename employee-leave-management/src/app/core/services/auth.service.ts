@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from './token.service';
@@ -10,7 +10,9 @@ import { LoginRequest, LoginResponse } from '../models/auth.model';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:3000/api'; // Need to Replace with backend API URL
+  private readonly API_URL = 'https://localhost:7255/api'; 
+  // Backend API URL
+  // https://localhost:7255/api / Auth/login
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
 
@@ -24,11 +26,28 @@ export class AuthService {
     this.loadCurrentUser();
   }
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    //return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials);
+  // login(credentials: LoginRequest): Observable<LoginResponse> {
+  //   //return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials);
 
-    return of(this.getDummyLoginResponse(credentials)).pipe(
-      tap((response) => {
+  //   return of(this.getDummyLoginResponse(credentials)).pipe(
+  //     tap((response) => {
+  //       this.tokenService.setToken(response.token);
+  //       this.tokenService.setRefreshToken(response.refreshToken);
+  //       this.currentUserSubject.next(response.user);
+  //     })
+  //   );
+  // }
+
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
+      map((response: any) => {
+        // Backend returns data inside a wrapper, extract it
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return response;
+      }),
+      tap(response => {
         this.tokenService.setToken(response.token);
         this.tokenService.setRefreshToken(response.refreshToken);
         this.currentUserSubject.next(response.user);
@@ -83,43 +102,43 @@ export class AuthService {
     }
   }
 
-  private getDummyLoginResponse(credentials: LoginRequest): LoginResponse {
-    // This is a dummy implementation for testing purposes.
-    // Need to Replace this with actual HTTP call to backend API.
+  // private getDummyLoginResponse(credentials: LoginRequest): LoginResponse {
+  //   // This is a dummy implementation for testing purposes.
+  //   // Need to Replace this with actual HTTP call to backend API.
 
-    const isManager = credentials.email.includes('manager');
-    const userId = isManager ? 1 : 2;
+  //   const isManager = credentials.email.includes('manager');
+  //   const userId = isManager ? 1 : 2;
 
-    // Dummy JWT token payload
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-    const tokenPayload = btoa(
-      JSON.stringify({
-        sub: credentials.email,
-        email: credentials.email,
-        role: isManager ? 'Manager' : 'Employee',
-        userId: userId,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour expiration
-        iat: Math.floor(Date.now() / 1000),
-      })
-    );
+  //   // Dummy JWT token payload
+  //   const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  //   const tokenPayload = btoa(
+  //     JSON.stringify({
+  //       sub: credentials.email,
+  //       email: credentials.email,
+  //       role: isManager ? 'Manager' : 'Employee',
+  //       userId: userId,
+  //       exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour expiration
+  //       iat: Math.floor(Date.now() / 1000),
+  //     })
+  //   );
 
-    const signature = btoa('dummy-signature');
+  //   const signature = btoa('dummy-signature');
 
-    const token = `${header}.${tokenPayload}.${signature}`;
+  //   const token = `${header}.${tokenPayload}.${signature}`;
 
-    return {
-      token: token,
-      refreshToken: 'dummy-refresh-token',
-      user: {
-        id: userId,
-        employeeId: isManager ? 'EMP0001' : 'EMP0002',
-        FirstName: isManager ? 'John' : 'Jane',
-        LastName: isManager ? 'Manager' : 'Employee',
-        email: credentials.email,
-        role: isManager ? 'Manager' : 'Employee',
-        departmentId: 1,
-        managerId: 0,
-      },
-    };
-  }
+  //   return {
+  //     token: token,
+  //     refreshToken: 'dummy-refresh-token',
+  //     user: {
+  //       id: userId,
+  //       employeeId: isManager ? 'EMP0001' : 'EMP0002',
+  //       FirstName: isManager ? 'John' : 'Jane',
+  //       LastName: isManager ? 'Manager' : 'Employee',
+  //       email: credentials.email,
+  //       role: isManager ? 'Manager' : 'Employee',
+  //       departmentId: 1,
+  //       managerId: 0,
+  //     },
+  //   };
+  // }
 }

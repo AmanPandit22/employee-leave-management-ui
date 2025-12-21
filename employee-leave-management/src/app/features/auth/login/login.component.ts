@@ -77,6 +77,7 @@ export class LoginComponent {
     });
   }
 
+  //For Testing/Demo Purpose
   useDemoCredentials(type: 'manager' | 'employee'): void {
     if (type === 'manager') {
       this.loginForm.patchValue({
