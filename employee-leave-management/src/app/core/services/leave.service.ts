@@ -28,7 +28,7 @@ export class LeaveService {
   //     return of(this.getDummyLeaveBalance(employeeId, year));
   // }
 
-  getLeaveBalance(employeeId: string, year: number): Observable<LeaveBalance> {
+  getLeaveBalance(employeeId: number, year: number): Observable<LeaveBalance> {
     return this.http
       .get<any>(`${this.API_URL}/leave/balance/${employeeId}/${year}`)
       .pipe(map((response) => (response.success ? response.data : response)));
@@ -40,7 +40,7 @@ export class LeaveService {
   //     return of(this.getDummyLeaveApplications(employeeId));
   // }
 
-  getMyLeaveApplications(employeeId: string): Observable<LeaveApplication[]> {
+  getMyLeaveApplications(employeeId: number): Observable<LeaveApplication[]> {
     return this.http
       .get<any>(`${this.API_URL}/leave/my-applications/${employeeId}`)
       .pipe(map((response) => (response.success ? response.data : response)));

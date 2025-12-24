@@ -54,7 +54,7 @@ export class EmployeeDashboardComponent implements OnInit {
     if (!user) return;
 
     //Need to work on employeeId type consistently across the app
-    this.leaveService.getLeaveBalance(user.employeeId, this.currentYear).subscribe({
+    this.leaveService.getLeaveBalance(user.id, this.currentYear).subscribe({
       next: (balance) => {
         this.leaveBalance = balance;
       },
@@ -62,7 +62,7 @@ export class EmployeeDashboardComponent implements OnInit {
       error: (error) => console.error('Error loading leave balance:', error),
     });
 
-    this.leaveService.getMyLeaveApplications(user.employeeId).subscribe({
+    this.leaveService.getMyLeaveApplications(user.id).subscribe({
       next: (applications) => {
         this.recentApplications = applications.slice(0, 5);
 
